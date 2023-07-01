@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#root {
+    background: theme("colors.dark");
+    color: theme("colors.white");
+    min-height: theme("height.screen");
+}
+/* Hide both horizontal and vertical scrollbars */
+section::-webkit-scrollbar {
+    display: none;
+  }
+  
+  section {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    overflow: -moz-scrollbars-none;
+  }
+  
