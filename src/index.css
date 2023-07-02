@@ -5,8 +5,35 @@
 #root {
     background: theme("colors.dark");
     color: theme("colors.white");
-    min-height: theme("height.screen");
 }
+
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(to right, #f6f7f8 0%, #ededed 50%, #f6f7f8 100%);
+  background-repeat: no-repeat;
+  background-size: 200% 100%;
+  animation: shimmerAnimation 1.5s infinite;
+}
+
+@keyframes shimmerAnimation {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
 /* Hide both horizontal and vertical scrollbars */
 section::-webkit-scrollbar {
     display: none;
