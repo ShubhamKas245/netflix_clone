@@ -1,5 +1,6 @@
-import { Fragment, ReactElement, useRef, useEffect } from "react";
+import { Fragment, ReactElement, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
+import { Position } from "../common/types";
 
 type ModalProps = {
   isOpen: boolean;
@@ -7,6 +8,7 @@ type ModalProps = {
   children: React.ReactElement;
   title: string | ReactElement;
   closeModal:()=>void;
+  position?: Position | null;
 };
 
 export default function Modal({
@@ -15,6 +17,7 @@ export default function Modal({
   title,
   children,
   closeModal,
+  position
 }: ModalProps) {
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -62,7 +65,8 @@ export default function Modal({
               >
                 <Dialog.Panel
                   ref={panelRef}
-                  className="transform overflow-hidden rounded-2xl bg-dark p-6 text-left align-middle shadow-xl transition-all"
+                  style={position? {position:"fixed",...position}:{}}
+                  className="transform overflow-hidden rounded-2xl bg-dark p-4 text-left align-middle shadow-xl transition-all"
                 >
                   <Dialog.Title
                     as="h3"

@@ -75,7 +75,7 @@ const ContentRow = ({ title, endPoint }: cardProp) => {
 
   return (
     <section className="row-container ml-12 hover:cursor-pointer">
-      <h2 className="mb-2">{title}</h2>
+      <h2>{title}</h2>
       <PageIndicator
         className="mb-4 opacity-0 transition-transform duration-300 ease-in"
         pageCount={pageCount}

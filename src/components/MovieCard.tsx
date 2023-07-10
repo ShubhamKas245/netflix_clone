@@ -8,6 +8,7 @@ import PlayIcon from "@heroicons/react/24/solid/PlayCircleIcon";
 import LikeIcon from "@heroicons/react/24/outline/HandThumbUpIcon";
 import PlusIcon from "@heroicons/react/24/outline/PlusIcon";
 import ChevronDown from "@heroicons/react/24/outline/ChevronDownIcon";
+import { Position } from "../common/types";
 
 type MovieCardProp = {
   poster_path: string;
@@ -37,7 +38,9 @@ export type MovieVideoInfo = {
 
 const MovieCard = ({ poster_path, id, title }: MovieCardProp) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [hidePoster,setHidePoster]=useState(false)
   const [videoInfo, setVideoInfo] = useState<MovieVideoInfo | null>(null);
+  const [position, setPosition] = useState<Position | null>(null);
   const movieCardRef = useRef<HTMLSelectElement>(null);
 
   const onClose = (value: boolean): void => {
@@ -49,6 +52,20 @@ const MovieCard = ({ poster_path, id, title }: MovieCardProp) => {
   };
   const onMouseEnter = async (e: any) => {
     const [videoInfo] = await fetchMovieInfo();
+    let calculatePosition = movieCardRef.current?.getBoundingClientRect();
+    console.log({ calculatePosition });
+    let top = (calculatePosition?.top ?? 0) - 100;
+    let left = (calculatePosition?.left ?? 0) - 100;
+    if (left < 0) {
+      left = (calculatePosition?.left as number);
+    }
+    let totalWidth = left + 420;
+    if (totalWidth > document.body.clientWidth) {
+      left = left - (totalWidth - document.body.clientWidth);
+    }
+
+    setPosition({ top, left });
+    console.log({ videoInfo });
     setVideoInfo(videoInfo);
     setIsOpen(true);
   };
@@ -67,6 +84,18 @@ const MovieCard = ({ poster_path, id, title }: MovieCardProp) => {
     () => movieCardRef.current?.removeEventListener("mouseenter", onMouseEnter);
   }, []);
 
+  useEffect(()=>{
+    if(videoInfo?.key){
+      setTimeout(()=>{
+        setHidePoster(true)
+      },500)
+      
+    }
+    if(!isOpen){
+      setHidePoster(false)
+    }
+  },[videoInfo,isOpen])
+
   return (
     <>
       <section
@@ -76,7 +105,7 @@ const MovieCard = ({ poster_path, id, title }: MovieCardProp) => {
       >
         <img
           loading="lazy"
-          className="h-full w-[200px] "
+          className="h-full w-[150px] "
           src={createImageUrl(poster_path)}
           alt={title}
         />
@@ -87,12 +116,15 @@ const MovieCard = ({ poster_path, id, title }: MovieCardProp) => {
         key={id}
         onClose={onClose}
         closeModal={closeModal}
+        position={position}
       >
-        <section>
-          <YouTube
+        <section className="aspect-square transition-[height] duration-500 ease-in" >
+          <img src={createImageUrl(poster_path)} alt={title} className={`${hidePoster ? " invisible h-0" : "visible h-[350px]"} w-full`}  />
+          <YouTube className={`${!hidePoster ? " invisible h-0" : "visible h-[350px]"} w-full`}
             videoId={videoInfo?.key}
             opts={{
-              width: "450px",
+              width: "350px",
+              height: "350px",
               playerVars: {
                 autoplay: 1,
                 playsinline: 1,
@@ -119,7 +151,7 @@ const MovieCard = ({ poster_path, id, title }: MovieCardProp) => {
               </li>
             </ul>
             <ul className="flex items-center justify-evenly gap-4">
-            <li className="h-10 w-10 rounded-full border-2 border-gray-500 hover:border-white">
+              <li className="h-10 w-10 rounded-full border-2 border-gray-500 hover:border-white">
                 <button className="h-full w-full">
                   <ChevronDown />
                 </button>
